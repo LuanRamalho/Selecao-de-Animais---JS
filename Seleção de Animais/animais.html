@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Animais</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lightblue;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .title {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: darkblue;
+            text-align: center;
+        }
+
+        .selection {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        select {
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        button {
+            font-size: 14px;
+            font-weight: bold;
+            background-color: darkblue;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: navy;
+        }
+
+        .image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border: 2px solid darkblue;
+            border-radius: 10px;
+            width: 320px;
+            height: 320px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="title">Selecione um Animal</div>
+
+    <div class="selection">
+        <label for="animal-select">Animal:</label>
+        <select id="animal-select">
+            <option value="">Selecione...</option>
+        </select>
+        <button onclick="showImage()">Mostrar Imagem</button>
+    </div>
+
+    <div class="image-container" id="image-container">
+        <!-- A imagem ou mensagem de erro será exibida aqui -->
+    </div>
+
+    <script>
+        const animalImages = {
+            "Cachorro": "https://i.pinimg.com/736x/7e/a8/86/7ea886cd9d9de708574f857dcb998804.jpg",
+            "Gato": "https://i.pinimg.com/736x/b4/de/5d/b4de5dd3dfcd4607cf2a15932def92a9.jpg",
+            "Coelho": "https://i.pinimg.com/736x/f8/6c/3d/f86c3d4669d4100db869607e222e1a35.jpg",
+            "Tartaruga": "https://i.pinimg.com/736x/5b/78/19/5b78199ae2819d892297e9212eff3764.jpg",
+            "Elefante": "https://i.pinimg.com/736x/53/b0/a8/53b0a891a9e1110b637b8033d4d44d50.jpg",
+            "Girafa": "https://i.pinimg.com/736x/6b/d9/79/6bd9799f0f0e8a8e1b91fe835d60f90d.jpg",
+            "Boi": "https://i.pinimg.com/736x/5b/ae/de/5baede60ebc379dd042ebb54369426fb.jpg",
+            "Vaca": "https://i.pinimg.com/736x/70/fe/9c/70fe9ce8f486b91c36457f204e0f3f75.jpg",
+            "Porco": "https://i.pinimg.com/736x/b9/ce/71/b9ce715817fdcdd072ed150755ed5035.jpg",
+            "Javali": "https://i.pinimg.com/736x/ac/8c/7a/ac8c7ad7f2e4719c99b5a6ecff4e59ef.jpg",
+            "Cavalo": "https://i.pinimg.com/736x/c9/27/0e/c9270e46e5ac9141fb088927af545092.jpg",
+            "Camelo": "https://i.pinimg.com/736x/72/50/4c/72504c6ac684dda2a02da7d5705bbd11.jpg",
+            "Galo": "https://i.pinimg.com/736x/6b/e6/37/6be6375f4ae70f7c15665040717c6d17.jpg",
+            "Galinha": "https://i.pinimg.com/736x/5f/c4/18/5fc41851895ffb436e8f2b142898d1da.jpg",
+            "Touro": "https://i.pinimg.com/736x/71/cb/f3/71cbf3326623fcaf0a852ffb819383ac.jpg",
+            "Zebra": "https://i.pinimg.com/736x/16/4b/6c/164b6cea01dd893aacc783dd0bbaafb6.jpg",
+            "Gavião": "https://i.pinimg.com/736x/6d/d7/fa/6dd7fabdbbf1f7757def0cbc896cbbc4.jpg",
+            "Falcão": "https://i.pinimg.com/736x/91/0b/f3/910bf38c8bbfb4bafc485a36b4a961a5.jpg",
+            "Rinoceronte": "https://i.pinimg.com/736x/9e/02/8e/9e028e2ead360959263a1f840ab664dc.jpg",
+            "Hipopótamo": "https://i.pinimg.com/736x/de/5b/00/de5b005c24cb55e89dabe8d1e430f4d7.jpg",
+            "Macaco": "https://i.pinimg.com/736x/4f/a3/45/4fa3457be1cd631eb6b4698947d4b555.jpg",
+            "Leão": "https://i.pinimg.com/736x/38/04/bd/3804bdc52bb42b36214b07830a216023.jpg",
+            "Tigre": "https://i.pinimg.com/736x/fa/47/a9/fa47a9288f7fc77438b56c241f4416ea.jpg",
+            "Onça": "https://i.pinimg.com/736x/7a/6a/ed/7a6aedb7d3e5581f766f5003eda3746c.jpg",
+            "Jacaré": "https://i.pinimg.com/736x/a1/76/e1/a176e1653eaf8d7e990fc8021244f0b4.jpg",
+            "Cobra": "https://i.pinimg.com/736x/24/f6/be/24f6bed5a421281df44d092d5c0ae315.jpg",
+            "Peixe": "https://i.pinimg.com/736x/f4/a7/46/f4a74608b643e670777ae93d0e27d92b.jpg",
+            "Tubarão": "https://i.pinimg.com/736x/4c/bf/d6/4cbfd686ae0572882bd9db7a16eab85d.jpg",
+            "Baleia": "https://i.pinimg.com/736x/9b/cb/13/9bcb134247a24abec3d9f24e1901ed85.jpg",
+            "Estrela do Mar": "https://i.pinimg.com/736x/84/a4/59/84a459b36b69c870ebccc13419bc7422.jpg",
+            "Golfinho": "https://i.pinimg.com/736x/c2/0f/28/c20f289452c77dfeac800993f8013abc.jpg",
+        };
+
+        const selectElement = document.getElementById("animal-select");
+
+        // Preenche o dropdown com os nomes dos animais
+        Object.keys(animalImages).forEach(animal => {
+            const option = document.createElement("option");
+            option.value = animal;
+            option.textContent = animal;
+            selectElement.appendChild(option);
+        });
+
+        function showImage() {
+            const selectedAnimal = selectElement.value;
+            const imageContainer = document.getElementById("image-container");
+
+            // Limpa o conteúdo anterior
+            imageContainer.innerHTML = "";
+
+            if (selectedAnimal && animalImages[selectedAnimal]) {
+                const img = document.createElement("img");
+                img.src = animalImages[selectedAnimal];
+                img.alt = selectedAnimal;
+                imageContainer.appendChild(img);
+            } else {
+                const error = document.createElement("div");
+                error.textContent = "Erro ao carregar imagem ou animal não selecionado.";
+                error.className = "error";
+                imageContainer.appendChild(error);
+            }
+        }
+    </script>
+
+</body>
+</html>
